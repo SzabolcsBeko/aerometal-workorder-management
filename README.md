@@ -41,7 +41,7 @@ The Overview tab has an `Export Excel` button. Endpoint: `GET /api/assignments/e
 
 - npm run test:coverage
 
-6. Class diagram
+## Class diagram
    <img width="539" height="392" alt="kép" src="https://github.com/user-attachments/assets/1212fa18-a613-40a2-b56b-ef7cea529a1c" />
 
 
