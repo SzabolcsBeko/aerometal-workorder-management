@@ -10,55 +10,6 @@ npm-debug.log.*
 /dist/
 
 ######################
-# SASS
-######################
-.sass-cache/
-
-######################
-# Eclipse
-######################
-*.pydevproject
-.project
-.metadata
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.classpath
-.settings/
-.loadpath
-.factorypath
-
-# External tool builders
-.externalToolBuilders/**
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# CDT-specific
-.cproject
-
-# PDT-specific
-.buildpath
-
-# STS-specific
-/.sts4-cache/*
-
-######################
-# IntelliJ
-######################
-.idea/
-*.iml
-*.iws
-*.ipr
-*.ids
-*.orig
-classes/
-out/
-
-######################
 # Visual Studio Code
 ######################
 .vscode/*
@@ -74,15 +25,6 @@ out/
 /log/
 /target/
 /backend/target/
-
-
-######################
-# Gradle
-######################
-.gradle/
-/build/
-/buildSrc/.gradle/
-/buildSrc/build/
 
 ######################
 # Package Files
@@ -102,19 +44,6 @@ Thumbs.db
 Desktop.ini
 
 ######################
-# Mac OSX
-######################
-.DS_Store
-.svn
-
-# Thumbnails
-._*
-
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
-
-######################
 # Directories
 ######################
 /bin/
@@ -132,11 +61,6 @@ Desktop.ini
 *.*~
 *~
 .merge_file*
-
-######################
-# Gradle Wrapper
-######################
-!gradle/wrapper/gradle-wrapper.jar
 
 ######################
 # Maven Wrapper
