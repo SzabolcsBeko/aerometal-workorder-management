@@ -3,11 +3,11 @@
 Full-stack example with Spring Boot + MySQL backend and React + Vite frontend.
 
 ## Model
-- Employee(id, name, email)
+- Employee(id, first_name, last_name, amp_number, hire_date)
 - Component(id, name, description)
-- Right(id, name, description), persisted in `app_right` because RIGHT is a SQL keyword
-- AccessAssignment(id, employee, component, right)
-- Unique DB constraint: `(employee_id, component_id, right_id)`
+- AccessRight(id, name, description), persisted in `access_right` table
+- WorkOrdertRegister(id, employee, component, right)
+- Unique DB constraint: `(employee_id, component_id, access_right_id, workorder_number, workorder_date)`
 
 ## Run
 1. Install Java 21, Maven, Node.js and MySQL.
@@ -31,7 +31,7 @@ The Overview tab has an `Export Excel` button. Endpoint: `GET /api/assignments/e
 ## API
 - `/api/employees` GET/POST, `/api/employees/{id}` PUT/DELETE
 - `/api/components` GET/POST, `/api/components/{id}` PUT/DELETE
-- `/api/rights` GET/POST, `/api/rights/{id}` PUT/DELETE
+- `/api/accessrights` GET/POST, `/api/accessrights/{id}` PUT/DELETE
 - `/api/assignments` GET/POST, `/api/assignments/{id}` DELETE
 - `/api/assignments/export` GET
 
