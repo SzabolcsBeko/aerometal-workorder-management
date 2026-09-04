@@ -1,6 +1,9 @@
 spring:
   application:
     name: employee-component-right-manager
+    
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
   
   profiles:
     active: dev
