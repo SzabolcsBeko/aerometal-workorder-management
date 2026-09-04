@@ -3,9 +3,15 @@ package com.aerometal.assignmentmanager.entity;
 import java.time.LocalDate;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "workorder_register")
+@Getter
+@Setter
+@RequiredArgsConstructor	
 public class WorkOrderRegister {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,52 +29,4 @@ public class WorkOrderRegister {
 	private String workOrderNumber;
 	@Column(name="workorder_date", nullable = false)
 	private LocalDate workOrderDate;
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-	
-	public String getWorkOrderNumber() {
-		return workOrderNumber;
-	}
-
-	public void setWorkOrderNumber(String workOrderNumber) {
-		this.workOrderNumber = workOrderNumber;
-	}
-
-	public LocalDate getWorkOrderDate() {
-		return workOrderDate;
-	}
-
-	public void setWorkOrderDate(LocalDate workOrderDate) {
-		this.workOrderDate = workOrderDate;
-	}
-
-	public Employee getEmployee() {
-		return employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public Component getComponent() {
-		return component;
-	}
-
-	public void setComponent(Component component) {
-		this.component = component;
-	}
-
-	public AccessRight getRight() {
-		return right;
-	}
-
-	public void setRight(AccessRight right) {
-		this.right = right;
-	}
 }
