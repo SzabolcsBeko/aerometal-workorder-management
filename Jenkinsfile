@@ -3,70 +3,26 @@ pipeline {
 
     stages {
 
-        stage('Environment Check') {
+        stage('Build') {
             steps {
-                bat '''
-                    echo ===== CURRENT DIRECTORY =====
-                    cd
-
-                    echo ===== DIRECTORY CONTENT =====
-                    dir
-
-                    echo ===== JAVA =====
-                    java -version
-
-                    echo ===== MAVEN =====
-                    mvn -version
-
-                    echo ===== GIT =====
-                    git --version
-                '''
+                bat 'mvnw.cmd clean package'
             }
         }
 
-        stage('Checkout') {
+        stage('Test') {
             steps {
-                checkout scm
-            }
-        }
-
-        stage('Check Project') {
-            steps {
-                dir('backend') {
-                    bat '''
-                        echo ===== PROJECT DIRECTORY =====
-                        cd
-                        dir
-                        echo ===== POM.XML =====
-                        if exist pom.xml (
-                            echo pom.xml FOUND
-                        ) else (
-                            echo ERROR: pom.xml NOT FOUND
-                            exit /b 1
-                        )
-                    '''
-                }
-            }
-        }
-
-        stage('Maven Build') {
-            steps {
-                dir('backend') {
-                    bat 'mvn clean package'
-                }
+                bat 'mvnw.cmd test'
             }
         }
     }
 
     post {
         success {
-            echo '===== BUILD SUCCESSFUL ====='
-            archiveArtifacts artifacts: 'backend/target/*.jar',
-                             fingerprint: true
+            echo 'Build and tests completed successfully.'
         }
 
         failure {
-            echo '===== BUILD FAILED ====='
+            echo 'Build failed.'
         }
     }
 }
