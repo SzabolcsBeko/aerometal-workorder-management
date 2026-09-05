@@ -1,11 +1,15 @@
 stage('Build') {
     steps {
-        bat 'mvnw.cmd clean package'
+         dir('backend') {
+            bat 'mvnw.cmd clean package'
+         }
     }
 }
 
 stage('Test') {
     steps {
-        bat 'mvnw.cmd test'
+        dir('backend') {
+            bat 'mvnw.cmd test'
+        }
     }
 }
