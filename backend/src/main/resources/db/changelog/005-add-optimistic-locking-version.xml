@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.liquibase.org/xml/ns/dbchangelog
+            http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.29.xsd">
+
+    <changeSet id="005-add-version-to-access-right" author="developer">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists
+                        tableName="access_right"
+                        columnName="version"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="access_right">
+            <column
+                    name="version"
+                    type="BIGINT"
+                    defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="006-add-version-to-component" author="developer">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists
+                        tableName="component"
+                        columnName="version"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="component">
+            <column
+                    name="version"
+                    type="BIGINT"
+                    defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="007-add-version-to-employee" author="developer">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists
+                        tableName="employee"
+                        columnName="version"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="employee">
+            <column
+                    name="version"
+                    type="BIGINT"
+                    defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="008-add-version-to-workorder-register" author="developer">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists
+                        tableName="workorder_register"
+                        columnName="version"/>
+            </not>
+        </preConditions>
+
+        <addColumn tableName="workorder_register">
+            <column
+                    name="version"
+                    type="BIGINT"
+                    defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

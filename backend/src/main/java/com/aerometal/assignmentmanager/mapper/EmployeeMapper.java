@@ -12,11 +12,13 @@ import com.aerometal.assignmentmanager.entity.Employee;
 public interface EmployeeMapper {
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
     Employee toEntity(EmployeeRequest request);
 
     EmployeeResponse toResponse(Employee employee);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "version", ignore = true)
     void updateEntity(
         EmployeeRequest request,
         @MappingTarget Employee employee

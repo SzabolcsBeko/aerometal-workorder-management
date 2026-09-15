@@ -26,7 +26,7 @@ import com.aerometal.assignmentmanager.entity.WorkOrderRegister;
 class WorkOrderRegisterRepositoryTest {
 
     @Autowired
-    private WorkOrdertRepository repository;
+    private WorkOrderRegisterRepository repository;
     @Autowired
     private EmployeeRepository employeeRepository;
     @Autowired

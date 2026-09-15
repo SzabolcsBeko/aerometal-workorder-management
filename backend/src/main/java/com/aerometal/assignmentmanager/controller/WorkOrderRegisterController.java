@@ -1,8 +1,8 @@
 package com.aerometal.assignmentmanager.controller;
 
-import com.aerometal.assignmentmanager.dto.WorkOrderResponse;
-import com.aerometal.assignmentmanager.dto.WorkOrderRequest;
-import com.aerometal.assignmentmanager.service.WorkOrderService;
+import com.aerometal.assignmentmanager.dto.WorkOrderRegisterResponse;
+import com.aerometal.assignmentmanager.dto.WorkOrderRegisterRequest;
+import com.aerometal.assignmentmanager.service.WorkOrderRegisterService;
 
 import jakarta.validation.Valid;
 import org.springframework.http.*;
@@ -11,25 +11,25 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/assignments")
-public class WorkOrderController {
-	private final WorkOrderService service;
+public class WorkOrderRegisterController {
+	private final WorkOrderRegisterService service;
 
-	public WorkOrderController(WorkOrderService service) {
+	public WorkOrderRegisterController(WorkOrderRegisterService service) {
 		this.service = service;
 	}
 
 	@GetMapping
-	public List<WorkOrderResponse> all() {
+	public List<WorkOrderRegisterResponse> all() {
 		return service.findAll();
 	}
 
 	@PostMapping
-	public WorkOrderResponse create(@Valid @RequestBody WorkOrderRequest request) {
+	public WorkOrderRegisterResponse create(@Valid @RequestBody WorkOrderRegisterRequest request) {
 		return service.create(request);
 	}
 	
 	@PutMapping("/{id}")
-	public WorkOrderResponse update(@PathVariable Long id, @Valid @RequestBody WorkOrderRequest request) {
+	public WorkOrderRegisterResponse update(@PathVariable Long id, @Valid @RequestBody WorkOrderRegisterRequest request) {
 		return service.update(id, request);
 	}
 

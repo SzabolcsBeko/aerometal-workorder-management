@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import java.time.LocalDate;
 import java.util.UUID;
 import java.util.stream.StreamSupport;
@@ -24,7 +26,7 @@ import com.aerometal.assignmentmanager.entity.Employee;
 import com.aerometal.assignmentmanager.repository.AccessRightRepository;
 import com.aerometal.assignmentmanager.repository.ComponentRepository;
 import com.aerometal.assignmentmanager.repository.EmployeeRepository;
-import com.aerometal.assignmentmanager.repository.WorkOrdertRepository;
+import com.aerometal.assignmentmanager.repository.WorkOrderRegisterRepository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,83 +41,204 @@ class ControllerMySqlIntegrationTest {
     @Autowired EmployeeRepository employeeRepository;
     @Autowired ComponentRepository componentRepository;
     @Autowired AccessRightRepository accessRightRepository;
-    @Autowired WorkOrdertRepository workOrderRepository;
+    @Autowired WorkOrderRegisterRepository workOrderRepository;
 
     @Test
-    void employeeControllerShouldPerformCrudAgainstMySql() throws Exception {
+    void employeeControllerShouldPerformCrudAgainstMySql()
+            throws Exception {
+
         String suffix = suffix();
-        MvcResult created = mockMvc.perform(post("/api/employees")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(employeeJson("Test", "Employee", "AMP-" + suffix, "2025-01-10")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").isNumber())
-                .andExpect(jsonPath("$.ampNumber").value("AMP-" + suffix))
-                .andReturn();
+
+        MvcResult created = mockMvc.perform(
+            post("/api/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson(
+                    "Test",
+                    "Employee",
+                    "AMP-" + suffix,
+                    "2025-01-10",
+                    null
+                ))
+        )
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.id").isNumber())
+            .andExpect(jsonPath("$.version").isNumber())
+            .andExpect(
+                jsonPath("$.ampNumber")
+                    .value("AMP-" + suffix)
+            )
+            .andReturn();
+
         long id = id(created);
+        long currentVersion = version(created);
 
-        mockMvc.perform(get("/api/employees/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("Test"));
+        mockMvc.perform(
+            get("/api/employees/{id}", id)
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.firstName").value("Test")
+            );
 
-        mockMvc.perform(put("/api/employees/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(employeeJson("Updated", "Employee", "AMP-" + suffix, "2025-02-10")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.firstName").value("Updated"))
-                .andExpect(jsonPath("$.hireDate").value("2025-02-10"));
+        mockMvc.perform(
+            put("/api/employees/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(employeeJson(
+                    "Updated",
+                    "Employee",
+                    "AMP-" + suffix,
+                    "2025-02-10",
+                    currentVersion
+                ))
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.firstName").value("Updated")
+            )
+            .andExpect(
+                jsonPath("$.hireDate").value("2025-02-10")
+            )
+            .andExpect(
+                jsonPath("$.version")
+                    .value(currentVersion + 1)
+            );
 
-        mockMvc.perform(delete("/api/employees/{id}", id)).andExpect(status().isOk());
-        assertThat(employeeRepository.existsById(id)).isFalse();
+        mockMvc.perform(
+            delete("/api/employees/{id}", id)
+        )
+            .andExpect(status().isOk());
+
+        assertThat(
+            employeeRepository.existsById(id)
+        ).isFalse();
     }
-
+    
     @Test
-    void componentControllerShouldPerformCrudAgainstMySql() throws Exception {
+    void componentControllerShouldPerformCrudAgainstMySql()
+            throws Exception {
+
         String name = "COMP-" + suffix();
-        MvcResult created = mockMvc.perform(post("/api/components")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(namedEntityJson(name, "Test component")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(name))
-                .andReturn();
+
+        MvcResult created = mockMvc.perform(
+            post("/api/components")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(namedEntityJson(
+                    name,
+                    "Test component",
+                    null
+                ))
+        )
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value(name))
+            .andExpect(jsonPath("$.version").isNumber())
+            .andReturn();
+
         long id = id(created);
+        long currentVersion = version(created);
 
-        mockMvc.perform(get("/api/components/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Test component"));
+        mockMvc.perform(
+            get("/api/components/{id}", id)
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.description")
+                    .value("Test component")
+            );
 
-        mockMvc.perform(put("/api/components/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(namedEntityJson(name, "Updated component")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Updated component"));
+        MvcResult updated = mockMvc.perform(
+            put("/api/components/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(namedEntityJson(
+                    name,
+                    "Updated component",
+                    currentVersion
+                ))
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.description")
+                    .value("Updated component")
+            )
+            .andExpect(
+                jsonPath("$.version")
+                    .value(currentVersion + 1)
+            )
+            .andReturn();
 
-        mockMvc.perform(delete("/api/components/{id}", id)).andExpect(status().isOk());
-        assertThat(componentRepository.existsById(id)).isFalse();
+        long updatedVersion = version(updated);
+
+        mockMvc.perform(
+            delete("/api/components/{id}", id)
+                .queryParam(
+                    "version",
+                    Long.toString(updatedVersion)
+                )
+        )
+            .andExpect(status().isNoContent());
+
+        assertThat(
+            componentRepository.existsById(id)
+        ).isFalse();
     }
 
     @Test
-    void accessRightControllerShouldPerformCrudAgainstMySql() throws Exception {
+    void accessRightControllerShouldPerformCrudAgainstMySql()
+            throws Exception {
+
         String name = "RIGHT-" + suffix();
-        MvcResult created = mockMvc.perform(post("/api/accessrights")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(namedEntityJson(name, "Test right")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.name").value(name))
-                .andReturn();
+
+        MvcResult created = mockMvc.perform(
+            post("/api/accessrights")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(namedEntityJson(
+                    name,
+                    "Test right",
+                    null
+                ))
+        )
+            .andExpect(status().isCreated())
+            .andExpect(jsonPath("$.name").value(name))
+            .andExpect(jsonPath("$.version").isNumber())
+            .andReturn();
+
         long id = id(created);
+        long currentVersion = version(created);
 
-        mockMvc.perform(get("/api/accessrights/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Test right"));
+        mockMvc.perform(
+            get("/api/accessrights/{id}", id)
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.description").value("Test right")
+            );
 
-        mockMvc.perform(put("/api/accessrights/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(namedEntityJson(name, "Updated right")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.description").value("Updated right"));
+        mockMvc.perform(
+            put("/api/accessrights/{id}", id)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(namedEntityJson(
+                    name,
+                    "Updated right",
+                    currentVersion
+                ))
+        )
+            .andExpect(status().isOk())
+            .andExpect(
+                jsonPath("$.description")
+                    .value("Updated right")
+            )
+            .andExpect(
+                jsonPath("$.version")
+                    .value(currentVersion + 1)
+            );
 
-        mockMvc.perform(delete("/api/accessrights/{id}", id)).andExpect(status().isOk());
-        assertThat(accessRightRepository.existsById(id)).isFalse();
+        mockMvc.perform(
+            delete("/api/accessrights/{id}", id)
+        )
+            .andExpect(status().isNoContent());
+
+        assertThat(
+            accessRightRepository.existsById(id)
+        ).isFalse();
     }
 
     @Test
@@ -126,15 +249,30 @@ class ControllerMySqlIntegrationTest {
         AccessRight right = accessRightRepository.save(right("RIGHT-" + suffix));
 
         String number = "WO-" + suffix;
-        MvcResult created = mockMvc.perform(post("/api/assignments")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(workOrderJson(employee.getId(), component.getId(), right.getId(),
-                                number, "2026-08-20")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.workOrderNumber").value(number))
-                .andExpect(jsonPath("$.employeeId").value(employee.getId()))
-                .andReturn();
-        long id = id(created);
+        MvcResult created = mockMvc.perform(
+        	    post("/api/assignments")
+        	        .contentType(MediaType.APPLICATION_JSON)
+        	        .content(workOrderJson(
+        	            employee.getId(),
+        	            component.getId(),
+        	            right.getId(),
+        	            number,
+        	            "2026-08-20",
+        	            null
+        	        ))
+        	)
+        	    .andExpect(status().isOk())
+        	    .andExpect(
+        	        jsonPath("$.workOrderNumber").value(number)
+        	    )
+        	    .andExpect(
+        	        jsonPath("$.employeeId").value(employee.getId())
+        	    )
+        	    .andExpect(jsonPath("$.version").isNumber())
+        	    .andReturn();
+
+        	long id = id(created);
+        	long currentVersion = version(created);
 
         MvcResult list = mockMvc.perform(get("/api/assignments"))
                 .andExpect(status().isOk())
@@ -145,12 +283,27 @@ class ControllerMySqlIntegrationTest {
                 .anyMatch(node -> node.get("id").asLong() == id);
         assertThat(containsCreatedAssignment).isTrue();
 
-        mockMvc.perform(put("/api/assignments/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(workOrderJson(employee.getId(), component.getId(), right.getId(),
-                                number, "2026-08-21")))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.workOrderDate").value("2026-08-21"));
+        mockMvc.perform(
+        	    put("/api/assignments/{id}", id)
+        	        .contentType(MediaType.APPLICATION_JSON)
+        	        .content(workOrderJson(
+        	            employee.getId(),
+        	            component.getId(),
+        	            right.getId(),
+        	            number,
+        	            "2026-08-21",
+        	            currentVersion
+        	        ))
+        	)
+        	    .andExpect(status().isOk())
+        	    .andExpect(
+        	        jsonPath("$.workOrderDate")
+        	            .value("2026-08-21")
+        	    )
+        	    .andExpect(
+        	        jsonPath("$.version")
+        	            .value(currentVersion + 1)
+        	    );
 
         mockMvc.perform(get("/api/assignments/export"))
                 .andExpect(status().isOk())
@@ -167,7 +320,7 @@ class ControllerMySqlIntegrationTest {
     void employeeControllerShouldRejectInvalidRequest() throws Exception {
         mockMvc.perform(post("/api/employees")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(employeeJson("", "Employee", "AMP-TEST", "2025-01-10")))
+                        .content(employeeJson("", "Employee", "AMP-TEST", "2025-01-10", null)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation failed"));
     }
@@ -176,18 +329,29 @@ class ControllerMySqlIntegrationTest {
     void componentControllerShouldRejectBlankName() throws Exception {
         mockMvc.perform(post("/api/components")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(namedEntityJson("", "Invalid")))
+                        .content(namedEntityJson("", "Invalid", null)))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.message").value("Validation failed"));
     }
 
     @Test
-    void accessRightControllerShouldRejectBlankName() throws Exception {
-        mockMvc.perform(post("/api/accessrights")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(namedEntityJson("", "Invalid")))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.message").value("Validation failed"));
+    void accessRightControllerShouldRejectBlankName()
+            throws Exception {
+
+        mockMvc.perform(
+            post("/api/accessrights")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(namedEntityJson(
+                    "",
+                    "Invalid",
+                    null
+                ))
+        )
+            .andExpect(status().isBadRequest())
+            .andExpect(
+                jsonPath("$.message")
+                    .value("Validation failed")
+            );
     }
 
     @Test
@@ -205,32 +369,66 @@ class ControllerMySqlIntegrationTest {
     private long id(MvcResult result) throws Exception {
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
     }
+    
+    private long version(MvcResult result) throws Exception {
+        return objectMapper
+                .readTree(
+                    result.getResponse().getContentAsString()
+                )
+                .get("version")
+                .asLong();
+    }
 
-    private String employeeJson(String firstName, String lastName, String ampNumber, String hireDate)
+    private String employeeJson(String firstName, String lastName, String ampNumber, String hireDate, Long version)
             throws Exception {
-        JsonNode node = objectMapper.createObjectNode()
-                .put("firstName", firstName)
-                .put("lastName", lastName)
-                .put("ampNumber", ampNumber)
-                .put("hireDate", hireDate);
+    	 ObjectNode node = objectMapper.createObjectNode();
+
+    	    node.put("firstName", firstName);
+    	    node.put("lastName", lastName);
+    	    node.put("ampNumber", ampNumber);
+    	    node.put("hireDate", hireDate);
+
+    	    if (version != null) {
+    	        node.put("version", version);
+    	    }
+
+    	    return objectMapper.writeValueAsString(node);
+    }
+
+    private String namedEntityJson(String name, String description, Long version) throws Exception {
+    	ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("name", name);
+        node.put("description", description);
+
+        if (version != null) {
+            node.put("version", version);
+        }
+
         return objectMapper.writeValueAsString(node);
     }
 
-    private String namedEntityJson(String name, String description) throws Exception {
-        JsonNode node = objectMapper.createObjectNode()
-                .put("name", name)
-                .put("description", description);
-        return objectMapper.writeValueAsString(node);
-    }
+    private String workOrderJson(
+            Long employeeId,
+            Long componentId,
+            Long rightId,
+            String number,
+            String date,
+            Long version
+    ) throws Exception {
 
-    private String workOrderJson(Long employeeId, Long componentId, Long rightId,
-            String number, String date) throws Exception {
-        JsonNode node = objectMapper.createObjectNode()
-                .put("employeeId", employeeId)
-                .put("componentId", componentId)
-                .put("accessRightId", rightId)
-                .put("workOrderNumber", number)
-                .put("workOrderDate", date);
+        ObjectNode node = objectMapper.createObjectNode();
+
+        node.put("employeeId", employeeId);
+        node.put("componentId", componentId);
+        node.put("accessRightId", rightId);
+        node.put("workOrderNumber", number);
+        node.put("workOrderDate", date);
+
+        if (version != null) {
+            node.put("version", version);
+        }
+
         return objectMapper.writeValueAsString(node);
     }
 

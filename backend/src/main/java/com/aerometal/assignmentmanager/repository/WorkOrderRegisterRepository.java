@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.aerometal.assignmentmanager.entity.WorkOrderRegister;
 
-public interface WorkOrdertRepository extends JpaRepository<WorkOrderRegister, Long> {
+public interface WorkOrderRegisterRepository extends JpaRepository<WorkOrderRegister, Long> {
 	boolean existsByEmployeeIdAndComponentIdAndRightId(Long employeeId, Long componentId, Long rightId);
 
 	@EntityGraph(attributePaths = { "employee", "component", "right" })

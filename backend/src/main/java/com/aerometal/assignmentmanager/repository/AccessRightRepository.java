@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import com.aerometal.assignmentmanager.entity.AccessRight;
 
 public interface AccessRightRepository extends JpaRepository<AccessRight, Long> {
+	
+	boolean existsByName(String name);
+	boolean existsByNameAndIdNot(String name, Long id);
 }
