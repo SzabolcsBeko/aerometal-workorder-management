@@ -1,28 +1,33 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
+stages {
 
-        stage('Build') {
-            steps {
-                bat 'mvnw.cmd clean package'
+    stage('Build') {
+        steps {
+            dir('backend') {
+                bat 'mvnw.cmd clean package -DskipTests'
             }
         }
+    }
 
-        stage('Test') {
-            steps {
+    stage('Test') {
+        steps {
+            dir('backend') {
                 bat 'mvnw.cmd test'
             }
         }
     }
+}
 
-    post {
-        success {
-            echo 'Build and tests completed successfully.'
-        }
-
-        failure {
-            echo 'Build failed.'
-        }
+post {
+    success {
+        echo 'Build and tests completed successfully.'
     }
+
+    failure {
+        echo 'Build failed.'
+    }
+}
+
 }
