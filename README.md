@@ -32,7 +32,7 @@ Full-stack example with Spring Boot + MySQL backend and React + Vite frontend.
    It creates the frontend\dist\ directory. This reduces the size of the frontend. There will be no node_modules needed anymore 
    in production environment.
 
-   Further Nginx configuration and reload of it needed to use this \dist as final frontend distribution.
+   Further Nginx configuration and reload needes to use this \dist as final frontend distribution.
    
 7. Open http://localhost:5173
 
