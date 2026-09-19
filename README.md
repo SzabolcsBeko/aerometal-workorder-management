@@ -25,7 +25,8 @@ Full-stack example with Spring Boot + MySQL backend and React + Vite frontend.
    ```
 5. Fontend production build
    ```bash
-   change to the appropriate directory D:\sts-workspace-aerometal-development\aerometal-workorder-management\frontend
+   change to the appropriate directory like cd D:\sts-workspace-aerometal-development\aerometal-workorder-management\frontend
+   and run
    npm run build
    ```
    It creates the frontend\dist\ directory. This reduces the size of the frontend. There will be no node_modules needed anymore 
