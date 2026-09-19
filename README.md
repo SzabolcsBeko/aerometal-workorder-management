@@ -23,7 +23,17 @@ Full-stack example with Spring Boot + MySQL backend and React + Vite frontend.
    npm install
    npm run dev
    ```
-5. Open http://localhost:5173
+5. Fontend production build
+   ```bash
+   change to the appropriate directory D:\sts-workspace-aerometal-development\aerometal-workorder-management\frontend
+   npm run build
+   ```
+   It creates the frontend\dist\ directory. This reduces the size of the frontend. There will be no node_modules needed anymore 
+   in production environment.
+
+   Further Nginx configuration and reload of it needed to use this \dist as final frontend distribution.
+   
+7. Open http://localhost:5173
 
 ## Excel
 The Overview tab has an `Export Excel` button. Endpoint: `GET /api/assignments/export`.
