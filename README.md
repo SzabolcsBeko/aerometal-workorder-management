@@ -55,7 +55,7 @@ The Overview tab has an `Export Excel` button. Endpoint: `GET /api/assignments/e
 ## Class diagram
    <img width="539" height="392" alt="kép" src="https://github.com/user-attachments/assets/1212fa18-a613-40a2-b56b-ef7cea529a1c" />
 
-## Final Architecture.
+## Architecture Overview.
    The production deployment supposed to follow this architecture.
-
+   
 <img width="2165" height="352" alt="mermaid-diagram-workorder-management" src="https://github.com/user-attachments/assets/c60fb7b9-49d6-4892-90e1-416fff4f503d" />
