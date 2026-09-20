@@ -23,7 +23,7 @@ Full-stack example with Spring Boot + MySQL backend and React + Vite frontend.
    npm install
    npm run dev
    ```
-5. Fontend production build. This step is currently optional.
+5. Fontend production build. This step is optional currently.
    ```bash
    change to the appropriate directory like cd D:\sts-workspace-aerometal-development\aerometal-workorder-management\frontend
    and run
